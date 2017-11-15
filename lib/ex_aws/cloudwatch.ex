@@ -116,13 +116,11 @@ defmodule ExAws.CloudWatch do
 
   CloudWatch retains the history of an alarm even if you delete the alarm.
 
-  Parameters
-    AlarmName (string) -- The name of the alarm.
-    HistoryItemType (string) -- The type of alarm histories to retrieve.
-    StartDate (time) -- The starting date to retrieve alarm history.
-    EndDate (time) -- The ending date to retrieve alarm history.
-    MaxRecords (integer) -- The maximum number of alarm history records to retrieve.
-    NextToken (string) -- The token returned by a previous call to indicate that there is more data available.
+  ## Examples:
+        iex> ExAws.CloudWatch.describe_alarm_history()
+        %ExAws.Operation.Query{action: :describe_alarm_history,
+        params: %{"Action" => "DescribeAlarmHistory", "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type describe_alarm_history_opts :: [
     alarm_name: binary,
@@ -144,16 +142,11 @@ defmodule ExAws.CloudWatch do
   If no alarms are specified, all alarms are returned. Alarms can be retrieved by
   using only a prefix for the alarm name, the alarm state, or a prefix for any action.
 
-  Parameters
-    AlarmNames (list) --
-      The names of the alarms.
-
-      (string) --
-    AlarmNamePrefix (string) -- The alarm name prefix. If this parameter is specified, you cannot specify AlarmNames .
-    StateValue (string) -- The state value to be used in matching alarms.
-    ActionPrefix (string) -- The action name prefix.
-    MaxRecords (integer) -- The maximum number of alarm descriptions to retrieve.
-    NextToken (string) -- The token returned by a previous call to indicate that there is more data available.
+  ## Examples:
+        iex> ExAws.CloudWatch.describe_alarms()
+        %ExAws.Operation.Query{action: :describe_alarms,
+        params: %{"Action" => "DescribeAlarms", "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type describe_alarm_opts :: [
     alarm_names: [binary, ...],
@@ -174,35 +167,14 @@ defmodule ExAws.CloudWatch do
 
   To filter the results, specify a statistic, period, or unit.
 
-  Parameters
-    MetricName (string) --
-      [REQUIRED]
-
-      The name of the metric.
-
-    Namespace (string) --
-      [REQUIRED]
-
-      The namespace of the metric.
-
-    Statistic (string) -- The statistic for the metric, other than percentiles. For percentile statistics, use ExtendedStatistics .
-    ExtendedStatistic (string) -- The percentile statistic for the metric. Specify a value between p0.0 and p100.
-    Dimensions (list) --
-      The dimensions associated with the metric. If the metric has any associated dimensions, you must specify them in order for the call to succeed.
-
-    (dict) --
-      Expands the identity of a metric.
-
-    Name (string) -- [REQUIRED]
-      The name of the dimension.
-
-    Value (string) -- [REQUIRED]
-      The value representing the dimension measurement.
-
-    Period (integer) -- The period, in seconds, over which the statistic is applied.
-    Unit (string) -- The unit for the metric.
-  Return type
-      dict
+  ## Examples:
+        iex> ExAws.CloudWatch.describe_alarms_for_metric(
+        ...> "metric_name",
+        ...> "namespace")
+        %ExAws.Operation.Query{action: :describe_alarms_for_metric,
+        params: %{"Action" => "DescribeAlarmsForMetric", "MetricName" => "metric_name",
+          "Namespace" => "namespace", "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type describe_alarms_for_metric_opts :: [
     statistic: binary,
@@ -234,15 +206,15 @@ defmodule ExAws.CloudWatch do
   When an alarm's actions are disabled, the alarm actions do not execute when
   the alarm state changes.
 
-  Parameters
-    AlarmNames (list) --
-      [REQUIRED]
+  ## Examples:
+        iex> ExAws.CloudWatch.disable_alarm_actions(
+        ...> alarm_names: ["alarm1", "alarm2"])
+        %ExAws.Operation.Query{action: :disable_alarm_actions,
+        params: %{"Action" => "DisableAlarmActions",
+          "AlarmNames.AlarmNames.1" => "alarm1", "AlarmNames.AlarmNames.2" => "alarm2",
+          "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
+        service: :monitoring}
 
-      The names of the alarms.
-
-      (string) --
-  Returns
-    None
   """
   @spec disable_alarm_actions(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def disable_alarm_actions(alarm_names) do
@@ -253,15 +225,14 @@ defmodule ExAws.CloudWatch do
   @doc """
   Enables the actions for the specified alarms.
 
-  Parameters
-    AlarmNames (list) --
-      [REQUIRED]
-
-      The names of the alarms.
-
-      (string) --
-  Returns
-    None
+  ## Examples:
+        iex> ExAws.CloudWatch.enable_alarm_actions(
+        ...> alarm_names: ["alarm1", "alarm2"])
+        %ExAws.Operation.Query{action: :enable_alarm_actions,
+        params: %{"Action" => "EnableAlarmActions",
+          "AlarmNames.AlarmNames.1" => "alarm1", "AlarmNames.AlarmNames.2" => "alarm2",
+          "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
+        service: :monitoring}
   """
   @spec enable_alarm_actions(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def enable_alarm_actions(alarm_names) do
@@ -276,10 +247,13 @@ defmodule ExAws.CloudWatch do
   returned within DashboardBody as the template for the new dashboard
   when you call PutDashboard to create the copy.
 
-  Parameters
-    DashboardName (string) -- The name of the dashboard to be described.
-  Return type
-    dict
+  ## Examples:
+        iex> ExAws.CloudWatch.get_dashboard(
+        ...> [dashboard_name: "dashboard_name"])
+        %ExAws.Operation.Query{action: :get_dashboard,
+        params: %{"Action" => "GetDashboard", "DashboardName" => "dashboard_name",
+          "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
+        service: :monitoring}
   """
   @type get_dashboard_opts :: [
     dashboard_name: binary
@@ -335,79 +309,19 @@ defmodule ExAws.CloudWatch do
   CloudWatch started retaining 5-minute and 1-hour metric data as of
   July 9, 2016.
 
-  Parameters
-    Namespace (string) --
-      [REQUIRED]
-
-      The namespace of the metric, with or without spaces.
-
-    MetricName (string) --
-      [REQUIRED]
-
-      The name of the metric, with or without spaces.
-
-    Dimensions (list) --
-      The dimensions. If the metric contains multiple dimensions, you must
-      include a value for each dimension. CloudWatch treats each unique
-      combination of dimensions as a separate metric. If a specific
-      combination of dimensions was not published, you can't retrieve
-      statistics for it. You must specify the same dimensions that were
-      used when the metrics were created. For an example, see Dimension
-      Combinations in the Amazon CloudWatch User Guide . For more information
-      about specifying dimensions, see Publishing Metrics in the Amazon
-      CloudWatch User Guide.
-
-      (dict) --
-      Expands the identity of a metric.
-
-    Name (string) -- [REQUIRED]
-      The name of the dimension.
-
-    Value (string) -- [REQUIRED]
-      The value representing the dimension measurement.
-
-    StartTime (datetime) --
-      [REQUIRED]
-
-      The time stamp that determines the first data point to return. Start times are evaluated relative to the time that CloudWatch receives the request.
-
-      The value specified is inclusive; results include data points with the specified time stamp. The time stamp must be in ISO 8601 UTC format (for example, 2016-10-03T23:00:00Z).
-
-      CloudWatch rounds the specified time stamp as follows:
-
-      Start time less than 15 days ago - Round down to the nearest whole minute. For example, 12:32:34 is rounded down to 12:32:00.
-      Start time between 15 and 63 days ago - Round down to the nearest 5-minute clock interval. For example, 12:32:34 is rounded down to 12:30:00.
-      Start time greater than 63 days ago - Round down to the nearest 1-hour clock interval. For example, 12:32:34 is rounded down to 12:00:00.
-      If you set Period to 5, 10, or 30, the start time of your request is rounded down to the nearest time that corresponds to even 5-, 10-, or 30-second divisions of a minute. For example, if you make a query at (HH:mm:ss) 01:05:23 for the previous 10-second period, the start time of your request is rounded down and you receive data from 01:05:10 to 01:05:20. If you make a query at 15:07:17 for the previous 5 minutes of data, using a period of 5 seconds, you receive data timestamped between 15:02:15 and 15:07:15.
-
-    EndTime (datetime) --
-      [REQUIRED]
-
-      The time stamp that determines the last data point to return.
-
-      The value specified is exclusive; results include data points up to the specified time stamp. The time stamp must be in ISO 8601 UTC format (for example, 2016-10-10T23:00:00Z).
-
-    Period (integer) --
-      [REQUIRED]
-
-      The granularity, in seconds, of the returned data points. For metrics with regular resolution, a period can be as short as one minute (60 seconds) and must be a multiple of 60. For high-resolution metrics that are collected at intervals of less than one minute, the period can be 1, 5, 10, 30, 60, or any multiple of 60. High-resolution metrics are those metrics stored by a PutMetricData call that includes a StorageResolution of 1 second.
-
-      If the StartTime parameter specifies a time stamp that is greater than 3 hours ago, you must specify the period as follows or no data points in that time range is returned:
-
-      Start time between 3 hours and 15 days ago - Use a multiple of 60 seconds (1 minute).
-      Start time between 15 and 63 days ago - Use a multiple of 300 seconds (5 minutes).
-      Start time greater than 63 days ago - Use a multiple of 3600 seconds (1 hour).
-      Statistics (list) --
-      The metric statistics, other than percentile. For percentile statistics, use ExtendedStatistics . When calling GetMetricStatistics , you must specify either Statistics or ExtendedStatistics , but not both.
-
-      (string) --
-    ExtendedStatistics (list) --
-      The percentile statistics. Specify values between p0.0 and p100. When calling GetMetricStatistics , you must specify either Statistics or ExtendedStatistics , but not both.
-
-      (string) --
-      Unit (string) -- The unit for a given metric. Metrics may be reported in multiple units. Not supplying a unit results in all units being returned. If the metric only ever reports one unit, specifying a unit has no effect.
-  Return type
-    dict
+  ## Examples:
+        iex> ExAws.CloudWatch.get_metric_statistics(
+        ...> "namespace",
+        ...> "metric_name",
+        ...> DateTime.utc_now(),
+        ...> DateTime.utc_now(),
+        ...> 1)
+        [{:namespace, "namespace"}, {:metric_name, "metric_name"},
+        {:start_time, #DateTime<2017-11-15 16:09:55.805827Z>},
+        {:end_time, #DateTime<2017-11-15 16:09:55.808136Z>}, {:period, 1} |
+        %ExAws.Operation.Query{action: :get_metric_statistics,
+          params: %{"Action" => "GetMetricStatistics", "Version" => "2010-08-01"},
+          parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}]
   """
   @type get_metric_statistics_opts :: [
     dimensions: [dimension, ...],
@@ -435,11 +349,11 @@ defmodule ExAws.CloudWatch do
   starting with the prefix are listed. Otherwise, all dashboards in
   your account are listed.
 
-  Parameters
-    DashboardNamePrefix (string) -- If you specify this parameter, only the dashboards with names starting with the specified string are listed. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, ".", "-", and "_".
-    NextToken (string) -- The token returned by a previous call to indicate that there is more data available.
-  Return type
-    dict
+  ## Examples:
+        iex> ExAws.CloudWatch.list_dashboards()
+        %ExAws.Operation.Query{action: :list_dashboards,
+        params: %{"Action" => "ListDashboards", "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type list_dashboards_opts :: [
     dashboard_name_prefix: binary,
@@ -463,24 +377,14 @@ defmodule ExAws.CloudWatch do
   appears. Statistics about the metric, however, are available sooner
   using `get_metric_statistics/1`
 
-  Parameters
-    Namespace (string) -- The namespace to filter against.
-    MetricName (string) -- The name of the metric to filter against.
-    Dimensions (list) --
-      The dimensions to filter against.
-
-      (dict) --
-      Represents filters for a dimension.
-
-    Name (string) -- [REQUIRED]
-      The dimension name to be matched.
-
-    Value (string) --
-      The value of the dimension to be matched.
-
-    NextToken (string) -- The token returned by a previous call to indicate that there is more data available.
-  Return type
-    dict
+  ## Examples:
+        iex> ExAws.CloudWatch.list_metrics(
+        ...> [namespace: "namespace",
+        ...> metric_name: "metric_name"])
+        %ExAws.Operation.Query{action: :list_metrics,
+        params: %{"Action" => "ListMetrics", "MetricName" => "metric_name",
+          "Namespace" => "namespace", "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type list_metrics_opts :: [
     namespace: binary,
@@ -514,15 +418,12 @@ defmodule ExAws.CloudWatch do
 
   When you create a dashboard with PutDashboard , a good practice is to add a text widget at the top of the dashboard with a message that the dashboard was created by script and should not be changed in the console. This message could also point console users to the location of the DashboardBody script or the CloudFormation template used to create the dashboard.
 
-  Parameters
-    DashboardName (string) -- The name of the dashboard. If a dashboard with this name already exists, this call modifies that dashboard, replacing its current contents. Otherwise, a new dashboard is created. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, "-", and "_".
-    DashboardBody (string) --
-      The detailed information about the dashboard in JSON format, including the widgets to include and their location on the dashboard.
-
-      For more information about the syntax, see CloudWatch-Dashboard-Body-Structure .
-
-  Return type
-    dict
+  ## Examples:
+        iex> ExAws.CloudWatch.put_dashboard("dashboard_name", "dashboard_body")
+        %ExAws.Operation.Query{action: :put_dashboard,
+        params: %{"Action" => "PutDashboard", "DashboardBody" => "dashboard_body",
+          "DashboardName" => "dashboard_name", "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @spec put_dashboard(dashboard_name :: binary, dashboard_body :: binary) :: ExAws.Operation.Query.t()
   def put_dashboard(dashboard_name, dashboard_body) do
@@ -557,103 +458,22 @@ defmodule ExAws.CloudWatch do
 
   You must create at least one stop, terminate, or reboot alarm using either the Amazon EC2 or CloudWatch consoles to create the EC2ActionsAccess IAM role. After this IAM role is created, you can create stop, terminate, or reboot alarms using a command-line interface or API.
 
-  Parameters
-    AlarmName (string) --
-      [REQUIRED]
-
-      The name for the alarm. This name must be unique within the AWS account.
-
-    AlarmDescription (string) -- The description for the alarm.
-    ActionsEnabled (boolean) -- Indicates whether actions should be executed during any changes to the alarm state.
-    OKActions (list) --
-      The actions to execute when this alarm transitions to an OK state from any other state. Each action is specified as an Amazon Resource Name (ARN).
-
-      Valid Values: arn:aws:automate:region :ec2:stop | arn:aws:automate:region :ec2:terminate | arn:aws:automate:region :ec2:recover
-
-      Valid Values (for use with IAM roles): arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Stop/1.0 | arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Terminate/1.0 | arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Reboot/1.0
-
-      (string) --
-    AlarmActions (list) --
-      The actions to execute when this alarm transitions to the ALARM state from any other state. Each action is specified as an Amazon Resource Name (ARN).
-
-      Valid Values: arn:aws:automate:region :ec2:stop | arn:aws:automate:region :ec2:terminate | arn:aws:automate:region :ec2:recover
-
-      Valid Values (for use with IAM roles): arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Stop/1.0 | arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Terminate/1.0 | arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Reboot/1.0
-
-      (string) --
-    InsufficientDataActions (list) --
-      The actions to execute when this alarm transitions to the INSUFFICIENT_DATA state from any other state. Each action is specified as an Amazon Resource Name (ARN).
-
-      Valid Values: arn:aws:automate:region :ec2:stop | arn:aws:automate:region :ec2:terminate | arn:aws:automate:region :ec2:recover
-
-      Valid Values (for use with IAM roles): arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Stop/1.0 | arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Terminate/1.0 | arn:aws:swf:us-east-1:{customer-account }:action/actions/AWS_EC2.InstanceId.Reboot/1.0
-
-      (string) --
-    MetricName (string) --
-      [REQUIRED]
-
-      The name for the metric associated with the alarm.
-
-    Namespace (string) --
-      [REQUIRED]
-
-      The namespace for the metric associated with the alarm.
-
-    Statistic (string) -- The statistic for the metric associated with the alarm, other than percentile. For percentile statistics, use ExtendedStatistic .
-    ExtendedStatistic (string) -- The percentile statistic for the metric associated with the alarm. Specify a value between p0.0 and p100.
-    Dimensions (list) --
-      The dimensions for the metric associated with the alarm.
-
-      (dict) --
-      Expands the identity of a metric.
-
-    Name (string) -- [REQUIRED]
-      The name of the dimension.
-
-    Value (string) -- [REQUIRED]
-      The value representing the dimension measurement.
-
-    Period (integer) --
-      [REQUIRED]
-
-      The period, in seconds, over which the specified statistic is applied. Valid values are 10, 30, and any multiple of 60.
-
-      Be sure to specify 10 or 30 only for metrics that are stored by a PutMetricData call with a StorageResolution of 1. If you specify a Period of 10 or 30 for a metric that does not have sub-minute resolution, the alarm still attempts to gather data at the period rate that you specify. In this case, it does not receive data for the attempts that do not correspond to a one-minute data resolution, and the alarm may often lapse into INSUFFICENT_DATA status. Specifying 10 or 30 also sets this alarm as a high-resolution alarm, which has a higher charge than other alarms. For more information about pricing, see Amazon CloudWatch Pricing .
-
-      An alarm's total current evaluation period can be no longer than one day, so Period multiplied by EvaluationPeriods cannot be more than 86,400 seconds.
-
-    Unit (string) --
-      The unit of measure for the statistic. For example, the units for the Amazon EC2 NetworkIn metric are Bytes because NetworkIn tracks the number of bytes that an instance receives on all network interfaces. You can also specify a unit when you create a custom metric. Units help provide conceptual meaning to your data. Metric data points that specify a unit of measure, such as Percent, are aggregated separately.
-
-      If you specify a unit, you must use a unit that is appropriate for the metric. Otherwise, the CloudWatch alarm can get stuck in the INSUFFICIENT DATA state.
-
-    EvaluationPeriods (integer) --
-      [REQUIRED]
-
-      The number of periods over which data is compared to the specified threshold. An alarm's total current evaluation period can be no longer than one day, so this number multiplied by Period cannot be more than 86,400 seconds.
-
-    Threshold (float) --
-      [REQUIRED]
-
-      The value against which the specified statistic is compared.
-
-    ComparisonOperator (string) --
-      [REQUIRED]
-
-      The arithmetic operation to use when comparing the specified statistic and threshold. The specified statistic value is used as the first operand.
-
-    TreatMissingData (string) --
-      Sets how this alarm is to handle missing data points. If TreatMissingData is omitted, the default behavior of missing is used. For more information, see Configuring How CloudWatch Alarms Treats Missing Data .
-
-      Valid Values: breaching | notBreaching | ignore | missing
-
-    EvaluateLowSampleCountPercentile (string) --
-      Used only for alarms based on percentiles. If you specify ignore , the alarm state does not change during periods with too few data points to be statistically significant. If you specify evaluate or omit this parameter, the alarm is always evaluated and possibly changes state no matter how many data points are available. For more information, see Percentile-Based CloudWatch Alarms and Low Data Samples .
-
-      Valid Values: evaluate | ignore
-
-  Returns
-    None
+  ## Examples:
+        iex> ExAws.CloudWatch.put_metric_alarm(
+        ...> "alarm_name",
+        ...> "greater_than",
+        ...> 1,
+        ...> "metric_name",
+        ...> "namespace",
+        ...> 2,
+        ...> 3.1,
+        ...> [statistic: "sum"])
+        %ExAws.Operation.Query{action: :put_metric_alarm,
+        params: %{"Action" => "PutMetricAlarm", "AlarmName" => "alarm_name",
+          "ComparisonOperator" => "greater_than", "EvaluationPeriods" => 1,
+          "MetricName" => "metric_name", "Namespace" => "namespace", "Period" => 2,
+          "Statistic" => "sum", "Threshold" => 3.1, "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type put_metric_alarm_opts :: [
     actions_enabled: boolean,
@@ -726,7 +546,10 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-
+  ## Examples:
+        iex> ExAws.CloudWatch.wait_until_alarm_exists()%ExAws.Operation.Query{action: :wait_until_alarm_exists,
+        params: %{"Action" => "WaitUntilAlarmExists", "Version" => "2010-08-01"},
+        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type wait_until_alarm_exists_opts :: [
     action_prefix: binary,
