@@ -1,7 +1,20 @@
 defmodule ExAws.CloudWatch do
   @moduledoc """
-  Operations on
+  Operations on AWS CloudWatch
 
+  AWS CloudWatch provides a reliable, scalable, and flexible monitoring solution
+  for your AWS resources.
+
+  More information:
+  * [CloudWatch User Guide][User_Guide]
+  * [CloudWatch API][API_Doc]
+  * [Amazon Resource Names (ARNs)][ARN_Doc]
+  * [Cloud Watch Region Endpoints][CW_Regions]
+
+  [User_Guide]: http://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/WhatIsCloudWatch.html
+  [API_Doc]: http://docs.aws.amazon.com/AmazonCloudWatch/latest/APIReference/
+  [ARN_Doc]: http://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
+  [CW_Regions]: http://docs.aws.amazon.com/general/latest/gr/rande.html#cw_region
   """
   use ExAws.Utils,
     format_type: :xml,
@@ -53,16 +66,19 @@ defmodule ExAws.CloudWatch do
   ]
 
   @doc """
-  Deletes the specified alarms. In the event of an error, no alarms are deleted.
-  Parameters
-    AlarmNames (list) --
-    [REQUIRED]
+  Deletes the specified alarms.
 
-    The alarms to be deleted.
-  Returns
-    None
+  You may specify up to 100 alarms to delete. In the event of an error,
+  no alarms are deleted.
 
   ## Examples:
+
+          iex> ExAws.CloudWatch.delete_alarms(["alarm1", "alarm2"])
+          %ExAws.Operation.Query{action: :delete_alarms,
+          params: %{"Action" => "DeleteAlarms",
+          "AlarmNames.1" => "alarm1", "AlarmNames.2" => "alarm2",
+          "Version" => "2010-08-01"},
+          parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
 
   """
   @spec delete_alarms(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
@@ -72,26 +88,31 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  Deletes all dashboards that you specify. You may specify up to 100 dashboards to delete. If there is an error during this call, no dashboards are deleted.
-  Parameters
-    DashboardNames (list) --
-      The dashboards to be deleted.
+  Deletes all dashboards that you specify.
 
-      (string) --
-  Return type
-    dict
+  You may specify up to 100 dashboards to delete. If there is an error,
+  no dashboards are deleted.
+
+  ## Examples:
+
+          iex> ExAws.CloudWatch.delete_dashboards(["dash1", "dash2"])
+          %ExAws.Operation.Query{action: :delete_dashboards,
+          params: %{"Action" => "DeleteDashboards",
+          "DashboardNames.1" => "dash1", "DashboardNames.2" => "dash2",
+          "Version" => "2010-08-01"},
+          parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
-  @type delete_dashboards_opts :: [
-    dashboard_names: [binary, ...]
-  ]
-  @spec delete_dashboards() :: ExAws.Operation.Query.t()
-  @spec delete_dashboards(opts :: delete_dashboards_opts) :: ExAws.Operation.Query.t()
-  def delete_dashboards(opts \\ []) do
-    opts |> build_request(:delete_dashboards)
+  @spec delete_dashboards(dashboard_names :: [binary, ...]) :: ExAws.Operation.Query.t()
+  def delete_dashboards(dashboard_names) do
+    [{:dashboard_names, dashboard_names}]
+    |> build_request(:delete_dashboards)
   end
 
   @doc """
-  Retrieves the history for the specified alarm. You can filter the results by date range or item type. If an alarm name is not specified, the histories for all alarms are returned.
+  Retrieves the history for the specified alarm.
+
+  You can filter the results by date range or item type. If an alarm name
+  is not specified, the histories for all alarms are returned.
 
   CloudWatch retains the history of an alarm even if you delete the alarm.
 
@@ -102,8 +123,6 @@ defmodule ExAws.CloudWatch do
     EndDate (time) -- The ending date to retrieve alarm history.
     MaxRecords (integer) -- The maximum number of alarm history records to retrieve.
     NextToken (string) -- The token returned by a previous call to indicate that there is more data available.
-  Return type
-    dict
   """
   @type describe_alarm_history_opts :: [
     alarm_name: binary,
@@ -120,7 +139,11 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  Retrieves the specified alarms. If no alarms are specified, all alarms are returned. Alarms can be retrieved by using only a prefix for the alarm name, the alarm state, or a prefix for any action.
+  Retrieves the specified alarms.
+
+  If no alarms are specified, all alarms are returned. Alarms can be retrieved by
+  using only a prefix for the alarm name, the alarm state, or a prefix for any action.
+
   Parameters
     AlarmNames (list) --
       The names of the alarms.
@@ -131,8 +154,6 @@ defmodule ExAws.CloudWatch do
     ActionPrefix (string) -- The action name prefix.
     MaxRecords (integer) -- The maximum number of alarm descriptions to retrieve.
     NextToken (string) -- The token returned by a previous call to indicate that there is more data available.
-  Return type
-    dict
   """
   @type describe_alarm_opts :: [
     alarm_names: [binary, ...],
@@ -149,7 +170,10 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  Retrieves the alarms for the specified metric. To filter the results, specify a statistic, period, or unit.
+  Retrieves the alarms for the specified metric.
+
+  To filter the results, specify a statistic, period, or unit.
+
   Parameters
     MetricName (string) --
       [REQUIRED]
@@ -205,7 +229,11 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  Disables the actions for the specified alarms. When an alarm's actions are disabled, the alarm actions do not execute when the alarm state changes.
+  Disables the actions for the specified alarms.
+
+  When an alarm's actions are disabled, the alarm actions do not execute when
+  the alarm state changes.
+
   Parameters
     AlarmNames (list) --
       [REQUIRED]
@@ -224,6 +252,7 @@ defmodule ExAws.CloudWatch do
 
   @doc """
   Enables the actions for the specified alarms.
+
   Parameters
     AlarmNames (list) --
       [REQUIRED]
@@ -243,7 +272,9 @@ defmodule ExAws.CloudWatch do
   @doc """
   Displays the details of the dashboard that you specify.
 
-  To copy an existing dashboard, use GetDashboard , and then use the data returned within DashboardBody as the template for the new dashboard when you call PutDashboard to create the copy.
+  To copy an existing dashboard, use GetDashboard, and then use the data
+  returned within DashboardBody as the template for the new dashboard
+  when you call PutDashboard to create the copy.
 
   Parameters
     DashboardName (string) -- The name of the dashboard to be described.
@@ -262,23 +293,47 @@ defmodule ExAws.CloudWatch do
   @doc """
   Gets statistics for the specified metric.
 
-  The maximum number of data points returned from a single call is 1,440. If you request more than 1,440 data points, CloudWatch returns an error. To reduce the number of data points, you can narrow the specified time range and make multiple requests across adjacent time ranges, or you can increase the specified period. Data points are not returned in chronological order.
+  The maximum number of data points returned from a single call is 1,440. If
+  you request more than 1,440 data points, CloudWatch returns an error. To
+  reduce the number of data points, you can narrow the specified time range
+  and make multiple requests across adjacent time ranges, or you can increase
+  the specified period. Data points are not returned in chronological order.
 
-  CloudWatch aggregates data points based on the length of the period that you specify. For example, if you request statistics with a one-hour period, CloudWatch aggregates all data points with time stamps that fall within each one-hour period. Therefore, the number of values aggregated by CloudWatch is larger than the number of data points returned.
+  CloudWatch aggregates data points based on the length of the period that
+  you specify. For example, if you request statistics with a one-hour period,
+  CloudWatch aggregates all data points with time stamps that fall within each
+  one-hour period. Therefore, the number of values aggregated by CloudWatch
+  is larger than the number of data points returned.
 
-  CloudWatch needs raw data points to calculate percentile statistics. If you publish data using a statistic set instead, you can only retrieve percentile statistics for this data if one of the following conditions is true:
+  CloudWatch needs raw data points to calculate percentile statistics. If you
+  publish data using a statistic set instead, you can only retrieve percentile
+  statistics for this data if one of the following conditions is true:
 
   The SampleCount value of the statistic set is 1.
   The Min and the Max values of the statistic set are equal.
+
   Amazon CloudWatch retains metric data as follows:
 
-  Data points with a period of less than 60 seconds are available for 3 hours. These data points are high-resolution metrics and are available only for custom metrics that have been defined with a StorageResolution of 1.
-  Data points with a period of 60 seconds (1-minute) are available for 15 days.
-  Data points with a period of 300 seconds (5-minute) are available for 63 days.
-  Data points with a period of 3600 seconds (1 hour) are available for 455 days (15 months).
-  Data points that are initially published with a shorter period are aggregated together for long-term storage. For example, if you collect data using a period of 1 minute, the data remains available for 15 days with 1-minute resolution. After 15 days, this data is still available, but is aggregated and retrievable only with a resolution of 5 minutes. After 63 days, the data is further aggregated and is available with a resolution of 1 hour.
+  * Data points with a period of less than 60 seconds are available for 3
+    hours. These data points are high-resolution metrics and are available
+    only for custom metrics that have been defined with a StorageResolution
+    of 1.
+  * Data points with a period of 60 seconds (1-minute) are available for
+    15 days.
+  * Data points with a period of 300 seconds (5-minute) are available for
+    63 days.
+  * Data points with a period of 3600 seconds (1 hour) are available for
+    455 days (15 months).
+  * Data points that are initially published with a shorter period are
+    aggregated together for long-term storage. For example, if you collect
+    data using a period of 1 minute, the data remains available for 15 days
+    with 1-minute resolution. After 15 days, this data is still available,
+    but is aggregated and retrievable only with a resolution of 5 minutes.
+    After 63 days, the data is further aggregated and is available with a
+    resolution of 1 hour.
 
-  CloudWatch started retaining 5-minute and 1-hour metric data as of July 9, 2016.
+  CloudWatch started retaining 5-minute and 1-hour metric data as of
+  July 9, 2016.
 
   Parameters
     Namespace (string) --
@@ -292,7 +347,15 @@ defmodule ExAws.CloudWatch do
       The name of the metric, with or without spaces.
 
     Dimensions (list) --
-      The dimensions. If the metric contains multiple dimensions, you must include a value for each dimension. CloudWatch treats each unique combination of dimensions as a separate metric. If a specific combination of dimensions was not published, you can't retrieve statistics for it. You must specify the same dimensions that were used when the metrics were created. For an example, see Dimension Combinations in the Amazon CloudWatch User Guide . For more information about specifying dimensions, see Publishing Metrics in the Amazon CloudWatch User Guide .
+      The dimensions. If the metric contains multiple dimensions, you must
+      include a value for each dimension. CloudWatch treats each unique
+      combination of dimensions as a separate metric. If a specific
+      combination of dimensions was not published, you can't retrieve
+      statistics for it. You must specify the same dimensions that were
+      used when the metrics were created. For an example, see Dimension
+      Combinations in the Amazon CloudWatch User Guide . For more information
+      about specifying dimensions, see Publishing Metrics in the Amazon
+      CloudWatch User Guide.
 
       (dict) --
       Expands the identity of a metric.
@@ -366,7 +429,11 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  Returns a list of the dashboards for your account. If you include DashboardNamePrefix , only those dashboards with names starting with the prefix are listed. Otherwise, all dashboards in your account are listed.
+  Returns a list of the dashboards for your account.
+
+  If you include DashboardNamePrefix, only those dashboards with names
+  starting with the prefix are listed. Otherwise, all dashboards in
+  your account are listed.
 
   Parameters
     DashboardNamePrefix (string) -- If you specify this parameter, only the dashboards with names starting with the specified string are listed. The maximum length is 255, and valid characters are A-Z, a-z, 0-9, ".", "-", and "_".
@@ -385,11 +452,16 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  List the specified metrics. You can use the returned metrics with GetMetricStatistics to obtain statistical data.
+  List the specified metrics.
 
-  Up to 500 results are returned for any one call. To retrieve additional results, use the returned token with subsequent calls.
+  You can use the returned metrics with `get_metric_statistics/1` to obtain
+  statistical data. Up to 500 results are returned for any one call.
+  To retrieve additional results, use the returned token with subsequent
+  calls.
 
-  After you create a metric, allow up to fifteen minutes before the metric appears. Statistics about the metric, however, are available sooner using GetMetricStatistics .
+  After you create a metric, allow up to fifteen minutes before the metric
+  appears. Statistics about the metric, however, are available sooner
+  using `get_metric_statistics/1`
 
   Parameters
     Namespace (string) -- The namespace to filter against.
@@ -423,11 +495,22 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  Creates a dashboard if it does not already exist, or updates an existing dashboard. If you update a dashboard, the entire contents are replaced with what you specify here.
+  Creates a dashboard if it does not already exist, or updates an existing
+  dashboard.
 
-  You can have up to 500 dashboards per account. All dashboards in your account are global, not region-specific.
+  If you update a dashboard, the entire contents are replaced with what
+  you specify here.
 
-  A simple way to create a dashboard using PutDashboard is to copy an existing dashboard. To copy an existing dashboard using the console, you can load the dashboard and then use the View/edit source command in the Actions menu to display the JSON block for that dashboard. Another way to copy a dashboard is to use GetDashboard , and then use the data returned within DashboardBody as the template for the new dashboard when you call PutDashboard .
+  You can have up to 500 dashboards per account. All dashboards in your
+  account are global, not region-specific.
+
+  A simple way to create a dashboard using PutDashboard is to copy an
+  existing dashboard. To copy an existing dashboard using the console, you
+  can load the dashboard and then use the View/edit source command in the
+  Actions menu to display the JSON block for that dashboard. Another way to
+  copy a dashboard is to use `get_dashboard/1`, and then use the data
+  returned within DashboardBody as the template for the new dashboard
+  when you call `put_dashboard/2`.
 
   When you create a dashboard with PutDashboard , a good practice is to add a text widget at the top of the dashboard with a message that the dashboard was created by script and should not be changed in the console. This message could also point console users to the location of the DashboardBody script or the CloudFormation template used to create the dashboard.
 
@@ -441,22 +524,24 @@ defmodule ExAws.CloudWatch do
   Return type
     dict
   """
-  @type put_dashboard_opts :: [
-    dashboard_name: binary,
-    dashboard_body: binary
-  ]
-  @spec put_dashboard() :: ExAws.Operation.Query.t()
-  @spec put_dashboard(opts :: put_dashboard_opts) :: ExAws.Operation.Query.t()
-  def put_dashboard(opts \\ []) do
-    opts |> build_request(:put_dashboard)
+  @spec put_dashboard(dashboard_name :: binary, dashboard_body :: binary) :: ExAws.Operation.Query.t()
+  def put_dashboard(dashboard_name, dashboard_body) do
+    [{:dashboard_name, dashboard_name}, {:dashboard_body, dashboard_body}]
+    |> build_request(:put_dashboard)
   end
 
   @doc """
-  Creates or updates an alarm and associates it with the specified metric. Optionally, this operation can associate one or more Amazon SNS resources with the alarm.
+  Creates or updates an alarm and associates it with the specified metric.
 
-  When this operation creates an alarm, the alarm state is immediately set to INSUFFICIENT_DATA . The alarm is evaluated and its state is set appropriately. Any actions associated with the state are then executed.
+  Optionally, this operation can associate one or more Amazon SNS resources
+  with the alarm.
 
-  When you update an existing alarm, its state is left unchanged, but the update completely overwrites the previous configuration of the alarm.
+  When this operation creates an alarm, the alarm state is immediately set
+  to INSUFFICIENT_DATA . The alarm is evaluated and its state is set
+  appropriately. Any actions associated with the state are then executed.
+
+  When you update an existing alarm, its state is left unchanged, but the
+  update completely overwrites the previous configuration of the alarm.
 
   If you are an IAM user, you must have Amazon EC2 permissions for some operations:
 
@@ -599,20 +684,35 @@ defmodule ExAws.CloudWatch do
   end
 
   @doc """
-  Publishes metric data points to Amazon CloudWatch. CloudWatch associates the data points with the specified metric. If the specified metric does not exist, CloudWatch creates the metric. When CloudWatch creates a metric, it can take up to fifteen minutes for the metric to appear in calls to ListMetrics .
+  Publishes metric data points to Amazon CloudWatch.
+
+  CloudWatch associates the data points with the specified metric.
+  If the specified metric does not exist, CloudWatch creates the metric.
+  When CloudWatch creates a metric, it can take up to fifteen minutes for
+  the metric to appear in calls to ListMetrics .
 
   Each PutMetricData request is limited to 40 KB in size for HTTP POST requests.
 
-  Although the Value parameter accepts numbers of type Double , CloudWatch rejects values that are either too small or too large. Values must be in the range of 8.515920e-109 to 1.174271e+108 (Base 10) or 2e-360 to 2e360 (Base 2). In addition, special values (for example, NaN, +Infinity, -Infinity) are not supported.
+  Although the Value parameter accepts numbers of type Double, CloudWatch rejects
+  values that are either too small or too large. Values must be in the range
+  of 8.515920e-109 to 1.174271e+108 (Base 10) or 2e-360 to 2e360 (Base 2).
+  In addition, special values (for example, NaN, +Infinity, -Infinity) are
+  not supported.
 
-  You can use up to 10 dimensions per metric to further clarify what data the metric collects. For more information about specifying dimensions, see Publishing Metrics in the Amazon CloudWatch User Guide .
+  You can use up to 10 dimensions per metric to further clarify what data the
+  metric collects. For more information about specifying dimensions, see
+  Publishing Metrics in the Amazon CloudWatch User Guide.
 
-  Data points with time stamps from 24 hours ago or longer can take at least 48 hours to become available for GetMetricStatistics from the time they are submitted.
+  Data points with time stamps from 24 hours ago or longer can take at least
+  48 hours to become available for GetMetricStatistics from the time they are
+  submitted.
 
-  CloudWatch needs raw data points to calculate percentile statistics. If you publish data using a statistic set instead, you can only retrieve percentile statistics for this data if one of the following conditions is true:
+  CloudWatch needs raw data points to calculate percentile statistics. If you
+  publish data using a statistic set instead, you can only retrieve percentile
+  statistics for this data if one of the following conditions is true:
 
-  The SampleCount value of the statistic set is 1
-  The Min and the Max values of the statistic set are equal
+  * The SampleCount value of the statistic set is 1
+  * The Min and the Max values of the statistic set are equal
 
 
   """
@@ -660,7 +760,7 @@ defmodule ExAws.CloudWatch do
               |> filter_nil_params
               |> Map.put("Action", action_string)
               |> Map.put("Version", @version),
-      service: :elasticloadbalancing,
+      service: :monitoring,
       action: action
     }
   end

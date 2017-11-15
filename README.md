@@ -6,6 +6,7 @@ Service module for https://github.com/ex-aws/ex_aws
 
 The package can be installed by adding ex_aws_cloudwatch to your list of dependencies in mix.exs along with :ex_aws and your preferred JSON codec / http client
 
+```elixir
 def deps do
   [
     {:ex_aws, "~> 2.0"},
@@ -14,6 +15,7 @@ def deps do
     {:hackney, "~> 1.9"},
   ]
 end
+```
 
 Documentation can be found at https://hexdocs.pm/ex_aws_cloudwatch.
 
