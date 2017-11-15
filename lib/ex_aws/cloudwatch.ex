@@ -1,6 +1,6 @@
 defmodule ExAws.CloudWatch do
   @moduledoc """
-  Operations on 
+  Operations on
 
   """
   use ExAws.Utils,
@@ -61,7 +61,7 @@ defmodule ExAws.CloudWatch do
     The alarms to be deleted.
   Returns
     None
-  
+
   ## Examples:
 
   """
@@ -93,7 +93,7 @@ defmodule ExAws.CloudWatch do
   @doc """
   Retrieves the history for the specified alarm. You can filter the results by date range or item type. If an alarm name is not specified, the histories for all alarms are returned.
 
-  CloudWatch retains the history of an alarm even if you delete the alarm.  
+  CloudWatch retains the history of an alarm even if you delete the alarm.
 
   Parameters
     AlarmName (string) -- The name of the alarm.
@@ -201,7 +201,7 @@ defmodule ExAws.CloudWatch do
       {:metric_name, metric_name},
       {:namespace, namespace} | opts
     ]
-    |> build_request{:describe_alarms_for_metric}
+    |> build_request(:describe_alarms_for_metric)
   end
 
   @doc """
@@ -672,7 +672,7 @@ defmodule ExAws.CloudWatch do
   defp format_param({:attributes, attributes}) do
     attributes
     |> Enum.map(fn {key, value} -> [key: maybe_stringify(key), value: value] end)
-    |> format(prefix: "Attribute")    
+    |> format(prefix: "Attribute")
   end
 
   defp format_param({:tags, tags}) do
