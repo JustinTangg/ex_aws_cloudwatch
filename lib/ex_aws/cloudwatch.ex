@@ -7,7 +7,7 @@ defmodule ExAws.CloudWatch do
     format_type: :xml,
     non_standard_keys: %{}
   #version of the AWS API
-  @version "2015-12-01"
+  @version "2010-08-01"
 
   @type param :: {key :: atom, value :: binary}
   @type dimension :: {name :: binary, value :: binary}
@@ -51,39 +51,6 @@ defmodule ExAws.CloudWatch do
     unit: binary,
     value: float
   ]
-  @doc """
-  Adds the specified certificate to the specified secure listener.
-
-  If the certificate was already added, the call is successful but the certificate 
-  is not added again.
-
-  To list the certificates for your listener, use `describe_listener_certificates/1`.
-  To remove certificates from your listener, use `remove_listener_certificates/1`.
-
-  ## Examples:
-
-        iex> ExAws.CloudWatch.add_listener_certificates(
-        ...> "listener_arn", 
-        ...>  [%{certificate_arn: "certificate1_arn", is_default: true}, 
-        ...>   %{certificate_arn: "certificate2_arn"}])
-        %ExAws.Operation.Query{action: :add_listener_certificates,
-        params: %{"Action" => "AddListenerCertificates", 
-        "Certificate.1.CertificateArn" => "certificate1_arn",
-        "Certificate.1.IsDefault" => true,
-        "Certificate.2.CertificateArn" => "certificate2_arn",
-        "ListenerArn" => "listener_arn",
-        "Version" => "2015-12-01"}, 
-        parser: &ExAws.Utils.identity/2, path: "/", service: :elasticloadbalancing}
-
-  """
-  @spec add_listener_certificates(listener_arn :: binary, certificates :: [certificate, ...]) ::
-          ExAws.Operation.Query.t()
-  def add_listener_certificates(listener_arn, certificates, opts \\ []) do
-    [
-      {:listener_arn, listener_arn}, 
-      {:certificates, certificates} | opts]
-    |> build_request(:add_listener_certificates)
-  end
 
   @doc """
   Deletes the specified alarms. In the event of an error, no alarms are deleted.
