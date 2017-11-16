@@ -28,27 +28,6 @@ defmodule ExAws.CloudWatch do
     type: binary,
     target_group_arn: binary
   ]
-
-  @type certificate :: [
-    certificate_arn: binary,
-    is_default: boolean
-  ]
-
-  @type target_description :: [
-    id: binary,
-    port: integer,
-    availability_zone: binary
-  ]
-
-  @type rule_condition :: [
-    field: binary,
-    values: [binary, ...]
-  ]
-
-  @type subnet_mapping :: [
-    subnet_id: binary,
-    allocation_id: binary
-  ]
   @type statistic_set :: [
     maximum: float,
     minimum: float,
@@ -555,25 +534,6 @@ defmodule ExAws.CloudWatch do
     |> build_request(:put_metric_data_input)
   end
 
-  @doc """
-  ## Examples:
-        iex> ExAws.CloudWatch.wait_until_alarm_exists()%ExAws.Operation.Query{action: :wait_until_alarm_exists,
-        params: %{"Action" => "WaitUntilAlarmExists", "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
-  """
-  @type wait_until_alarm_exists_opts :: [
-    action_prefix: binary,
-    alarm_name_prefix: binary,
-    alarm_names: [binary, ...],
-    max_records: integer,
-    next_token: binary,
-    state_value: binary
-  ]
-  @spec wait_until_alarm_exists() :: ExAws.Operation.Query.t()
-  @spec wait_until_alarm_exists(opts :: wait_until_alarm_exists_opts) :: ExAws.Operation.Query.t()
-  def wait_until_alarm_exists(opts \\ []) do
-    opts |> build_request(:wait_until_alarm_exists)
-  end
   ####################
   # Helper Functions #
   ####################
