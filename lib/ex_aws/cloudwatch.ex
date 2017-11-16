@@ -416,7 +416,10 @@ defmodule ExAws.CloudWatch do
   returned within DashboardBody as the template for the new dashboard
   when you call `put_dashboard/2`.
 
-  When you create a dashboard with PutDashboard , a good practice is to add a text widget at the top of the dashboard with a message that the dashboard was created by script and should not be changed in the console. This message could also point console users to the location of the DashboardBody script or the CloudFormation template used to create the dashboard.
+  When you create a dashboard with PutDashboard , a good practice is to add a text widget at the top of the 
+  dashboard with a message that the dashboard was created by script and should not be changed in the console. 
+  This message could also point console users to the location of the DashboardBody script or the CloudFormation 
+  template used to create the dashboard.
 
   ## Examples:
         iex> ExAws.CloudWatch.put_dashboard("dashboard_name", "dashboard_body")
@@ -450,13 +453,20 @@ defmodule ExAws.CloudWatch do
   ec2:StopInstances for alarms with stop actions
   ec2:TerminateInstances for alarms with terminate actions
   ec2:DescribeInstanceRecoveryAttribute and ec2:RecoverInstances for alarms with recover actions
-  If you have read/write permissions for Amazon CloudWatch but not for Amazon EC2, you can still create an alarm, but the stop or terminate actions are not performed. However, if you are later granted the required permissions, the alarm actions that you created earlier are performed.
+  If you have read/write permissions for Amazon CloudWatch but not for Amazon EC2, you can still 
+  create an alarm, but the stop or terminate actions are not performed. However, if you are later granted 
+  the required permissions, the alarm actions that you created earlier are performed.
 
-  If you are using an IAM role (for example, an EC2 instance profile), you cannot stop or terminate the instance using alarm actions. However, you can still see the alarm state and perform any other actions such as Amazon SNS notifications or Auto Scaling policies.
+  If you are using an IAM role (for example, an EC2 instance profile), you cannot stop or terminate the 
+  instance using alarm actions. However, you can still see the alarm state and perform any other actions 
+  such as Amazon SNS notifications or Auto Scaling policies.
 
-  If you are using temporary security credentials granted using AWS STS, you cannot stop or terminate an EC2 instance using alarm actions.
+  If you are using temporary security credentials granted using AWS STS, you cannot stop or terminate an 
+  EC2 instance using alarm actions.
 
-  You must create at least one stop, terminate, or reboot alarm using either the Amazon EC2 or CloudWatch consoles to create the EC2ActionsAccess IAM role. After this IAM role is created, you can create stop, terminate, or reboot alarms using a command-line interface or API.
+  You must create at least one stop, terminate, or reboot alarm using either the Amazon EC2 or CloudWatch 
+  consoles to create the EC2ActionsAccess IAM role. After this IAM role is created, you can create stop, 
+  terminate, or reboot alarms using a command-line interface or API.
 
   ## Examples:
         iex> ExAws.CloudWatch.put_metric_alarm(
