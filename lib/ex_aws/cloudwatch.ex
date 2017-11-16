@@ -558,34 +558,6 @@ defmodule ExAws.CloudWatch do
     }
   end
 
-  defp format_param({:certificates, certificates}) do
-    certificates |> format(prefix: "Certificate")
-  end
-
-  defp format_param({:attributes, attributes}) do
-    attributes
-    |> Enum.map(fn {key, value} -> [key: maybe_stringify(key), value: value] end)
-    |> format(prefix: "Attribute")
-  end
-
-  defp format_param({:tags, tags}) do
-    tags
-    |> Enum.map(fn {key, value} -> [key: maybe_stringify(key), value: value] end)
-    |> format(prefix: "Tag")
-  end
-
-  defp format_param({:resource_arns, resource_arns}) do
-    resource_arns |> format(prefix: "ResourceArn")
-  end
-
-  defp format_param({:security_groups, security_groups}) do
-    security_groups |> format(prefix: "SecurityGroupId")
-  end
-
-  defp format_param({:default_actions, actions}) do
-    actions |> format(prefix: "Action")
-  end
-
   defp format_param({:start_time, start_time}) do
     start_time
     |> DateTime.to_iso8601
