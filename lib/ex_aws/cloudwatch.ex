@@ -558,14 +558,26 @@ defmodule ExAws.CloudWatch do
     }
   end
 
-  defp format_param({:dashboard_names, dashboard_names}) do
-    dashboard_names |> format(prefix: "DashboardName")
+  defp format_param({:alarm_actions, alarm_actions}) do
+    alarm_actions |> format(prefix: "AlarmActions.member")
   end
-  
+
+  defp format_param({:dashboard_names, dashboard_names}) do
+    dashboard_names |> format(prefix: "DashboardNames.member")
+  end
+
   defp format_param({:dimensions, dimensions}) do
     dimensions
     |> Enum.map(fn {key, value} -> [name: maybe_stringify(key), value: value] end)
-    |> format(prefix: "Dimension")
+    |> format(prefix: "Dimensions.member")
+  end
+
+  defp format_param({:insufficient_data_actions, insufficient_data_actions}) do
+    insufficient_data_actions |> format(prefix: "InsufficientDataActions.member")
+  end
+
+  defp format_param({:ok_actions, ok_actions}) do
+    ok_actions |> format(prefix: "OKActions.member")
   end
 
   defp format_param({:start_time, start_time}) do
