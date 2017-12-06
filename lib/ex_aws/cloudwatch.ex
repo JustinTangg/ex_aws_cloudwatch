@@ -562,6 +562,10 @@ defmodule ExAws.CloudWatch do
     alarm_actions |> format(prefix: "AlarmActions.member")
   end
 
+  defp format_param({:alarm_names, alarm_names}) do
+    alarm_names |> format(prefix: "AlarmNames.member")
+  end
+
   defp format_param({:dashboard_names, dashboard_names}) do
     dashboard_names |> format(prefix: "DashboardNames.member")
   end
@@ -572,8 +576,22 @@ defmodule ExAws.CloudWatch do
     |> format(prefix: "Dimensions.member")
   end
 
+  defp format_param({:end_time, end_time}) do
+    end_time
+    |> DateTime.to_iso8601
+    |> format(prefix: "EndTime")
+  end
+
+  defp format_param({:extended_statistics, extended_statistics}) do
+    extended_statistics |> format(prefix: "ExtendedStatistics.member")
+  end
+
   defp format_param({:insufficient_data_actions, insufficient_data_actions}) do
     insufficient_data_actions |> format(prefix: "InsufficientDataActions.member")
+  end
+
+  defp format_param({:metric_data, metric_data}) do
+    metric_data |> format(prefix: "MetricData.member")
   end
 
   defp format_param({:ok_actions, ok_actions}) do
@@ -586,10 +604,8 @@ defmodule ExAws.CloudWatch do
     |> format(prefix: "StartTime")
   end
 
-  defp format_param({:end_time, end_time}) do
-    end_time
-    |> DateTime.to_iso8601
-    |> format(prefix: "EndTime")
+  defp format_param({:statistics, statistics}) do
+    statistics |> format(prefix: "Statistics.member")
   end
 
   defp format_param({key, parameters}) do
