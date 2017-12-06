@@ -558,6 +558,10 @@ defmodule ExAws.CloudWatch do
     }
   end
 
+  defp format_param({:dashboard_names, dashboard_names}) do
+    dashboard_names |> format(prefix: "DashboardName")
+  end
+  
   defp format_param({:dimensions, dimensions}) do
     dimensions
     |> Enum.map(fn {key, value} -> [name: maybe_stringify(key), value: value] end)
