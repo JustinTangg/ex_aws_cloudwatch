@@ -23,7 +23,7 @@ defmodule ExAws.CloudWatch do
   @version "2010-08-01"
 
   @type param :: {key :: atom, value :: binary}
-  @type dimension :: {name :: binary, value :: binary}
+  @type dimension :: {name :: binary | atom, value :: binary}
   @type action :: [
     type: binary,
     target_group_arn: binary
@@ -558,6 +558,12 @@ defmodule ExAws.CloudWatch do
     }
   end
 
+  defp format_param({:dimensions, dimensions}) do
+    dimensions
+    |> Enum.map(fn {key, value} -> [name: maybe_stringify(key), value: value] end)
+    |> format(prefix: "Dimension")
+  end
+
   defp format_param({:start_time, start_time}) do
     start_time
     |> DateTime.to_iso8601
@@ -571,6 +577,6 @@ defmodule ExAws.CloudWatch do
   end
 
   defp format_param({key, parameters}) do
-    format([{key, parameters}])
+    format([ {key, parameters} ])
   end
 end

@@ -31,7 +31,7 @@ defmodule ExAws.CloudWatch.Mixfile do
       {:sweet_xml, ">= 0.0.0", only: [:dev, :test]},
       {:poison, ">= 0.0.0", only: [:dev, :test]},
       {:ex_doc, "~> 0.16", only: [:dev, :test]},
-      {:ex_aws, "~> 2.0", only: [:dev, :test]}
+      {:ex_aws, "~> 2.0.0", only: [:dev, :test]}
     ]
   end
 end
