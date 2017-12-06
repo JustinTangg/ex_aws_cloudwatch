@@ -23,17 +23,11 @@ defmodule ExAws.CloudWatch do
   @version "2010-08-01"
 
   @type param :: {key :: atom, value :: binary}
-  @type dimension :: {name :: binary | atom, value :: binary}
   @type action :: [
     type: binary,
     target_group_arn: binary
   ]
-  @type statistic_set :: [
-    maximum: float,
-    minimum: float,
-    sample_count: float,
-    sum: float
-  ]
+  @type dimension :: {name :: binary | atom, value :: binary}
   @type metric_datum :: [
     dimensions: [dimension, ...],
     metric_name: binary,
@@ -42,6 +36,12 @@ defmodule ExAws.CloudWatch do
     timestamp: %DateTime{},
     unit: binary,
     value: float
+  ]
+  @type statistic_set :: [
+    maximum: float,
+    minimum: float,
+    sample_count: float,
+    sum: float
   ]
 
   @doc """
