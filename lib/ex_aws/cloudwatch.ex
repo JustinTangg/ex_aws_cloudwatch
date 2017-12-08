@@ -51,14 +51,11 @@ defmodule ExAws.CloudWatch do
   no alarms are deleted.
 
   ## Examples:
-
-          iex> ExAws.CloudWatch.delete_alarms(["alarm1", "alarm2"])
-          %ExAws.Operation.Query{action: :delete_alarms,
-          params: %{"Action" => "DeleteAlarms",
-          "AlarmNames.1" => "alarm1", "AlarmNames.2" => "alarm2",
-          "Version" => "2010-08-01"},
-          parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
-
+      iex> ExAws.CloudWatch.delete_alarms(["alarm1", "alarm2"])
+      %ExAws.Operation.Query{action: :delete_alarms,
+      params: %{"Action" => "DeleteAlarms", "AlarmNames.member.1" => "alarm1",
+        "AlarmNames.member.2" => "alarm2", "Version" => "2010-08-01"},
+      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @spec delete_alarms(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def delete_alarms(alarm_names) do
@@ -73,13 +70,12 @@ defmodule ExAws.CloudWatch do
   no dashboards are deleted.
 
   ## Examples:
+      iex> ExAws.CloudWatch.delete_dashboards(["dash1", "dash2"])
+      %ExAws.Operation.Query{action: :delete_dashboards,
+      params: %{"Action" => "DeleteDashboards", "DashboardNames.member.1" => "dash1",
+        "DashboardNames.member.2" => "dash2", "Version" => "2010-08-01"},
+      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
 
-          iex> ExAws.CloudWatch.delete_dashboards(["dash1", "dash2"])
-          %ExAws.Operation.Query{action: :delete_dashboards,
-          params: %{"Action" => "DeleteDashboards",
-          "DashboardNames.1" => "dash1", "DashboardNames.2" => "dash2",
-          "Version" => "2010-08-01"},
-          parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @spec delete_dashboards(dashboard_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def delete_dashboards(dashboard_names) do
@@ -186,14 +182,12 @@ defmodule ExAws.CloudWatch do
   the alarm state changes.
 
   ## Examples:
-        iex> ExAws.CloudWatch.disable_alarm_actions(
-        ...> alarm_names: ["alarm1", "alarm2"])
-        %ExAws.Operation.Query{action: :disable_alarm_actions,
-        params: %{"Action" => "DisableAlarmActions",
-          "AlarmNames.AlarmNames.1" => "alarm1", "AlarmNames.AlarmNames.2" => "alarm2",
-          "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
-        service: :monitoring}
-
+      iex> ExAws.CloudWatch.disable_alarm_actions(alarm_names: ["alarm1", "alarm2"])
+      %ExAws.Operation.Query{action: :disable_alarm_actions,
+      params: %{"Action" => "DisableAlarmActions",
+        "AlarmNames.member.AlarmNames.1" => "alarm1",
+        "AlarmNames.member.AlarmNames.2" => "alarm2", "Version" => "2010-08-01"},
+      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @spec disable_alarm_actions(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def disable_alarm_actions(alarm_names) do
@@ -205,13 +199,12 @@ defmodule ExAws.CloudWatch do
   Enables the actions for the specified alarms.
 
   ## Examples:
-        iex> ExAws.CloudWatch.enable_alarm_actions(
-        ...> alarm_names: ["alarm1", "alarm2"])
-        %ExAws.Operation.Query{action: :enable_alarm_actions,
-        params: %{"Action" => "EnableAlarmActions",
-          "AlarmNames.AlarmNames.1" => "alarm1", "AlarmNames.AlarmNames.2" => "alarm2",
-          "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
-        service: :monitoring}
+      iex> ExAws.CloudWatch.enable_alarm_actions(alarm_names: ["alarm1", "alarm2"])
+      %ExAws.Operation.Query{action: :enable_alarm_actions,
+      params: %{"Action" => "EnableAlarmActions",
+        "AlarmNames.member.AlarmNames.1" => "alarm1",
+        "AlarmNames.member.AlarmNames.2" => "alarm2", "Version" => "2010-08-01"},
+      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @spec enable_alarm_actions(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def enable_alarm_actions(alarm_names) do
@@ -227,12 +220,11 @@ defmodule ExAws.CloudWatch do
   when you call put_dashboard/2 to create the copy.
 
   ## Examples:
-        iex> ExAws.CloudWatch.get_dashboard(
-        ...> [dashboard_name: "dashboard_name"])
-        %ExAws.Operation.Query{action: :get_dashboard,
-        params: %{"Action" => "get_dashboard/0", "DashboardName" => "dashboard_name",
-          "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
-        service: :monitoring}
+      iex> ExAws.CloudWatch.get_dashboard([dashboard_name: "dashboard_name"])
+      %ExAws.Operation.Query{action: :get_dashboard,
+      params: %{"Action" => "GetDashboard", "DashboardName" => "dashboard_name",
+        "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
+      service: :monitoring}
   """
   @type get_dashboard_opts :: [
     dashboard_name: binary
@@ -289,18 +281,15 @@ defmodule ExAws.CloudWatch do
   July 9, 2016.
 
   ## Examples:
-        iex> ExAws.CloudWatch.get_metric_statistics(
-        ...> "namespace",
-        ...> "metric_name",
-        ...> DateTime.utc_now(),
-        ...> DateTime.utc_now(),
-        ...> 1)
-        [{:namespace, "namespace"}, {:metric_name, "metric_name"},
-        {:start_time, #DateTime<2017-11-15 16:09:55.805827Z>},
-        {:end_time, #DateTime<2017-11-15 16:09:55.808136Z>}, {:period, 1} |
-        %ExAws.Operation.Query{action: :get_metric_statistics,
-          params: %{"Action" => "GetMetricStatistics", "Version" => "2010-08-01"},
-          parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}]
+      iex> {:ok, start_time, 0} = DateTime.from_iso8601("2017-01-23T23:50:07Z")
+      iex> {:ok, end_time, 0} = DateTime.from_iso8601("2017-02-23T23:50:07Z")
+      iex> ExAws.CloudWatch.get_metric_statistics("namespace", "metric_name", start_time, end_time, 1)
+      %ExAws.Operation.Query{action: :get_metric_statistics,
+      params: %{"Action" => "GetMetricStatistics",
+        "EndTime" => "2017-02-23T23:50:07Z", "MetricName" => "metric_name",
+        "Namespace" => "namespace", "Period" => 1,
+        "StartTime" => "2017-01-23T23:50:07Z", "Version" => "2010-08-01"},
+      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @type get_metric_statistics_opts :: [
     dimensions: [dimension, ...],
@@ -317,8 +306,8 @@ defmodule ExAws.CloudWatch do
       {:start_time, start_time},
       {:end_time, end_time},
       {:period, period} | opts
-      |> build_request(:get_metric_statistics)
     ]
+    |> build_request(:get_metric_statistics)
   end
 
   @doc """
@@ -395,17 +384,17 @@ defmodule ExAws.CloudWatch do
   returned within dashboard_body as the template for the new dashboard
   when you call `put_dashboard/2`.
 
-  When you create a dashboard with put_dashboard/2 , a good practice is to add a text widget at the top of the 
-  dashboard with a message that the dashboard was created by script and should not be changed in the console. 
-  This message could also point console users to the location of the dashboard_body script or the CloudFormation 
+  When you create a dashboard with put_dashboard/2 , a good practice is to add a text widget at the top of the
+  dashboard with a message that the dashboard was created by script and should not be changed in the console.
+  This message could also point console users to the location of the dashboard_body script or the CloudFormation
   template used to create the dashboard.
 
   ## Examples:
-        iex> ExAws.CloudWatch.put_dashboard("dashboard_name", "dashboard_body")
-        %ExAws.Operation.Query{action: :put_dashboard,
-        params: %{"Action" => "put_dashboard/2", "DashboardBody" => "dashboard_body",
-          "DashboardName" => "dashboard_name", "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+      iex> ExAws.CloudWatch.put_dashboard("dashboard_name", "dashboard_body")
+      %ExAws.Operation.Query{action: :put_dashboard,
+      params: %{"Action" => "PutDashboard", "DashboardBody" => "dashboard_body",
+        "DashboardName" => "dashboard_name", "Version" => "2010-08-01"},
+      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
   @spec put_dashboard(dashboard_name :: binary, dashboard_body :: binary) :: ExAws.Operation.Query.t()
   def put_dashboard(dashboard_name, dashboard_body) do
@@ -432,19 +421,19 @@ defmodule ExAws.CloudWatch do
   ec2:StopInstances for alarms with stop actions
   ec2:TerminateInstances for alarms with terminate actions
   ec2:DescribeInstanceRecoveryAttribute and ec2:RecoverInstances for alarms with recover actions
-  If you have read/write permissions for Amazon CloudWatch but not for Amazon EC2, you can still 
-  create an alarm, but the stop or terminate actions are not performed. However, if you are later granted 
+  If you have read/write permissions for Amazon CloudWatch but not for Amazon EC2, you can still
+  create an alarm, but the stop or terminate actions are not performed. However, if you are later granted
   the required permissions, the alarm actions that you created earlier are performed.
 
-  If you are using an IAM role (for example, an EC2 instance profile), you cannot stop or terminate the 
-  instance using alarm actions. However, you can still see the alarm state and perform any other actions 
+  If you are using an IAM role (for example, an EC2 instance profile), you cannot stop or terminate the
+  instance using alarm actions. However, you can still see the alarm state and perform any other actions
   such as Amazon SNS notifications or Auto Scaling policies.
 
-  If you are using temporary security credentials granted using AWS STS, you cannot stop or terminate an 
+  If you are using temporary security credentials granted using AWS STS, you cannot stop or terminate an
   EC2 instance using alarm actions.
 
-  You must create at least one stop, terminate, or reboot alarm using either the Amazon EC2 or CloudWatch 
-  consoles to create the EC2ActionsAccess IAM role. After this IAM role is created, you can create stop, 
+  You must create at least one stop, terminate, or reboot alarm using either the Amazon EC2 or CloudWatch
+  consoles to create the EC2ActionsAccess IAM role. After this IAM role is created, you can create stop,
   terminate, or reboot alarms using a command-line interface or API.
 
   ## Examples:
