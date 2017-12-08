@@ -55,7 +55,7 @@ defmodule ExAws.CloudWatch do
       %ExAws.Operation.Query{action: :delete_alarms,
       params: %{"Action" => "DeleteAlarms", "AlarmNames.member.1" => "alarm1",
         "AlarmNames.member.2" => "alarm2", "Version" => "2010-08-01"},
-      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+      parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @spec delete_alarms(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def delete_alarms(alarm_names) do
@@ -74,7 +74,7 @@ defmodule ExAws.CloudWatch do
       %ExAws.Operation.Query{action: :delete_dashboards,
       params: %{"Action" => "DeleteDashboards", "DashboardNames.member.1" => "dash1",
         "DashboardNames.member.2" => "dash2", "Version" => "2010-08-01"},
-      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+      parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
 
   """
   @spec delete_dashboards(dashboard_names :: [binary, ...]) :: ExAws.Operation.Query.t()
@@ -95,7 +95,7 @@ defmodule ExAws.CloudWatch do
         iex> ExAws.CloudWatch.describe_alarm_history()
         %ExAws.Operation.Query{action: :describe_alarm_history,
         params: %{"Action" => "DescribeAlarmHistory", "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+        parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @type describe_alarm_history_opts :: [
     alarm_name: binary,
@@ -121,7 +121,7 @@ defmodule ExAws.CloudWatch do
         iex> ExAws.CloudWatch.describe_alarms()
         %ExAws.Operation.Query{action: :describe_alarms,
         params: %{"Action" => "DescribeAlarms", "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+        parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @type describe_alarm_opts :: [
     alarm_names: [binary, ...],
@@ -149,7 +149,7 @@ defmodule ExAws.CloudWatch do
         %ExAws.Operation.Query{action: :describe_alarms_for_metric,
         params: %{"Action" => "DescribeAlarmsForMetric", "MetricName" => "metric_name",
           "Namespace" => "namespace", "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+        parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @type describe_alarms_for_metric_opts :: [
     statistic: binary,
@@ -187,7 +187,7 @@ defmodule ExAws.CloudWatch do
       params: %{"Action" => "DisableAlarmActions",
         "AlarmNames.member.AlarmNames.1" => "alarm1",
         "AlarmNames.member.AlarmNames.2" => "alarm2", "Version" => "2010-08-01"},
-      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+      parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @spec disable_alarm_actions(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def disable_alarm_actions(alarm_names) do
@@ -204,7 +204,7 @@ defmodule ExAws.CloudWatch do
       params: %{"Action" => "EnableAlarmActions",
         "AlarmNames.member.AlarmNames.1" => "alarm1",
         "AlarmNames.member.AlarmNames.2" => "alarm2", "Version" => "2010-08-01"},
-      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+      parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @spec enable_alarm_actions(alarm_names :: [binary, ...]) :: ExAws.Operation.Query.t()
   def enable_alarm_actions(alarm_names) do
@@ -223,7 +223,7 @@ defmodule ExAws.CloudWatch do
       iex> ExAws.CloudWatch.get_dashboard([dashboard_name: "dashboard_name"])
       %ExAws.Operation.Query{action: :get_dashboard,
       params: %{"Action" => "GetDashboard", "DashboardName" => "dashboard_name",
-        "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
+        "Version" => "2010-08-01"}, parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/",
       service: :monitoring}
   """
   @type get_dashboard_opts :: [
@@ -289,7 +289,7 @@ defmodule ExAws.CloudWatch do
         "EndTime" => "2017-02-23T23:50:07Z", "MetricName" => "metric_name",
         "Namespace" => "namespace", "Period" => 1,
         "StartTime" => "2017-01-23T23:50:07Z", "Version" => "2010-08-01"},
-      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+      parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @type get_metric_statistics_opts :: [
     dimensions: [dimension, ...],
@@ -321,7 +321,7 @@ defmodule ExAws.CloudWatch do
         iex> ExAws.CloudWatch.list_dashboards()
         %ExAws.Operation.Query{action: :list_dashboards,
         params: %{"Action" => "ListDashboards", "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+        parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @type list_dashboards_opts :: [
     dashboard_name_prefix: binary,
@@ -352,7 +352,7 @@ defmodule ExAws.CloudWatch do
         %ExAws.Operation.Query{action: :list_metrics,
         params: %{"Action" => "ListMetrics", "MetricName" => "metric_name",
           "Namespace" => "namespace", "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+        parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @type list_metrics_opts :: [
     namespace: binary,
@@ -394,7 +394,7 @@ defmodule ExAws.CloudWatch do
       %ExAws.Operation.Query{action: :put_dashboard,
       params: %{"Action" => "PutDashboard", "DashboardBody" => "dashboard_body",
         "DashboardName" => "dashboard_name", "Version" => "2010-08-01"},
-      parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+      parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @spec put_dashboard(dashboard_name :: binary, dashboard_body :: binary) :: ExAws.Operation.Query.t()
   def put_dashboard(dashboard_name, dashboard_body) do
@@ -451,7 +451,7 @@ defmodule ExAws.CloudWatch do
           "ComparisonOperator" => "greater_than", "EvaluationPeriods" => 1,
           "MetricName" => "metric_name", "Namespace" => "namespace", "Period" => 2,
           "Statistic" => "sum", "Threshold" => 3.1, "Version" => "2010-08-01"},
-        parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
+        parser: &ExAws.Cloudwatch.Parsers.parse/2, path: "/", service: :monitoring}
   """
   @type put_metric_alarm_opts :: [
     actions_enabled: boolean,
@@ -543,7 +543,8 @@ defmodule ExAws.CloudWatch do
               |> Map.put("Action", action_string)
               |> Map.put("Version", @version),
       service: :monitoring,
-      action: action
+      action: action,
+      parser: &ExAws.Cloudwatch.Parsers.parse/2
     }
   end
 
