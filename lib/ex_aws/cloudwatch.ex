@@ -23,17 +23,11 @@ defmodule ExAws.CloudWatch do
   @version "2010-08-01"
 
   @type param :: {key :: atom, value :: binary}
-  @type dimension :: {name :: binary, value :: binary}
   @type action :: [
     type: binary,
     target_group_arn: binary
   ]
-  @type statistic_set :: [
-    maximum: float,
-    minimum: float,
-    sample_count: float,
-    sum: float
-  ]
+  @type dimension :: {name :: binary | atom, value :: binary}
   @type metric_datum :: [
     dimensions: [dimension, ...],
     metric_name: binary,
@@ -42,6 +36,12 @@ defmodule ExAws.CloudWatch do
     timestamp: %DateTime{},
     unit: binary,
     value: float
+  ]
+  @type statistic_set :: [
+    maximum: float,
+    minimum: float,
+    sample_count: float,
+    sum: float
   ]
 
   @doc """
@@ -222,15 +222,15 @@ defmodule ExAws.CloudWatch do
   @doc """
   Displays the details of the dashboard that you specify.
 
-  To copy an existing dashboard, use GetDashboard, and then use the data
-  returned within DashboardBody as the template for the new dashboard
-  when you call PutDashboard to create the copy.
+  To copy an existing dashboard, use get_dashboard/0, and then use the data
+  returned within dashboard_body as the template for the new dashboard
+  when you call put_dashboard/2 to create the copy.
 
   ## Examples:
         iex> ExAws.CloudWatch.get_dashboard(
         ...> [dashboard_name: "dashboard_name"])
         %ExAws.Operation.Query{action: :get_dashboard,
-        params: %{"Action" => "GetDashboard", "DashboardName" => "dashboard_name",
+        params: %{"Action" => "get_dashboard/0", "DashboardName" => "dashboard_name",
           "Version" => "2010-08-01"}, parser: &ExAws.Utils.identity/2, path: "/",
         service: :monitoring}
   """
@@ -262,7 +262,7 @@ defmodule ExAws.CloudWatch do
   publish data using a statistic set instead, you can only retrieve percentile
   statistics for this data if one of the following conditions is true:
 
-  The SampleCount value of the statistic set is 1.
+  The sample_count value of the statistic set is 1.
   The Min and the Max values of the statistic set are equal.
 
   Amazon CloudWatch retains metric data as follows:
@@ -324,7 +324,7 @@ defmodule ExAws.CloudWatch do
   @doc """
   Returns a list of the dashboards for your account.
 
-  If you include DashboardNamePrefix, only those dashboards with names
+  If you include dashboard_name_prefix, only those dashboards with names
   starting with the prefix are listed. Otherwise, all dashboards in
   your account are listed.
 
@@ -387,23 +387,23 @@ defmodule ExAws.CloudWatch do
   You can have up to 500 dashboards per account. All dashboards in your
   account are global, not region-specific.
 
-  A simple way to create a dashboard using PutDashboard is to copy an
+  A simple way to create a dashboard using put_dashboard/2 is to copy an
   existing dashboard. To copy an existing dashboard using the console, you
   can load the dashboard and then use the View/edit source command in the
   Actions menu to display the JSON block for that dashboard. Another way to
   copy a dashboard is to use `get_dashboard/1`, and then use the data
-  returned within DashboardBody as the template for the new dashboard
+  returned within dashboard_body as the template for the new dashboard
   when you call `put_dashboard/2`.
 
-  When you create a dashboard with PutDashboard , a good practice is to add a text widget at the top of the 
+  When you create a dashboard with put_dashboard/2 , a good practice is to add a text widget at the top of the 
   dashboard with a message that the dashboard was created by script and should not be changed in the console. 
-  This message could also point console users to the location of the DashboardBody script or the CloudFormation 
+  This message could also point console users to the location of the dashboard_body script or the CloudFormation 
   template used to create the dashboard.
 
   ## Examples:
         iex> ExAws.CloudWatch.put_dashboard("dashboard_name", "dashboard_body")
         %ExAws.Operation.Query{action: :put_dashboard,
-        params: %{"Action" => "PutDashboard", "DashboardBody" => "dashboard_body",
+        params: %{"Action" => "put_dashboard/2", "DashboardBody" => "dashboard_body",
           "DashboardName" => "dashboard_name", "Version" => "2010-08-01"},
         parser: &ExAws.Utils.identity/2, path: "/", service: :monitoring}
   """
@@ -456,7 +456,7 @@ defmodule ExAws.CloudWatch do
         ...> "namespace",
         ...> 2,
         ...> 3.1,
-        ...> [statistic: "sum"])
+        ...> "sum")
         %ExAws.Operation.Query{action: :put_metric_alarm,
         params: %{"Action" => "PutMetricAlarm", "AlarmName" => "alarm_name",
           "ComparisonOperator" => "greater_than", "EvaluationPeriods" => 1,
@@ -473,13 +473,12 @@ defmodule ExAws.CloudWatch do
     extended_statistic: binary,
     insufficient_data_actions: [binary, ...],
     ok_actions: [binary, ...],
-    statistic: binary,
     treat_missing_data: binary,
     unit: binary
   ]
-  @spec put_metric_alarm(alarm_name :: binary, comparison_operator :: binary, evaluation_periods :: integer, metric_name :: binary, namespace :: binary, period :: integer, threshold :: float) :: ExAws.Operation.Query.t()
-  @spec put_metric_alarm(alarm_name :: binary, comparison_operator :: binary, evaluation_periods :: integer, metric_name :: binary, namespace :: binary, period :: integer, threshold :: float, opts :: put_metric_alarm_opts) :: ExAws.Operation.Query.t()
-  def put_metric_alarm(alarm_name, comparison_operator, evaluation_periods, metric_name, namespace, period, threshold, opts \\ []) do
+  @spec put_metric_alarm(alarm_name :: binary, comparison_operator :: binary, evaluation_periods :: integer, metric_name :: binary, namespace :: binary, period :: integer, threshold :: float, statistic :: binary) :: ExAws.Operation.Query.t()
+  @spec put_metric_alarm(alarm_name :: binary, comparison_operator :: binary, evaluation_periods :: integer, metric_name :: binary, namespace :: binary, period :: integer, threshold :: float, statistic :: binary, opts :: put_metric_alarm_opts) :: ExAws.Operation.Query.t()
+  def put_metric_alarm(alarm_name, comparison_operator, evaluation_periods, metric_name, namespace, period, threshold, statistic, opts \\ []) do
     [
       {:alarm_name, alarm_name},
       {:comparison_operator, comparison_operator},
@@ -487,7 +486,8 @@ defmodule ExAws.CloudWatch do
       {:metric_name, metric_name},
       {:namespace, namespace},
       {:period, period},
-      {:threshold, threshold} | opts
+      {:threshold, threshold},
+      {:statistic, statistic} | opts
     ]
     |> build_request(:put_metric_alarm)
   end
@@ -558,10 +558,22 @@ defmodule ExAws.CloudWatch do
     }
   end
 
-  defp format_param({:start_time, start_time}) do
-    start_time
-    |> DateTime.to_iso8601
-    |> format(prefix: "StartTime")
+  defp format_param({:alarm_actions, alarm_actions}) do
+    alarm_actions |> format(prefix: "AlarmActions.member")
+  end
+
+  defp format_param({:alarm_names, alarm_names}) do
+    alarm_names |> format(prefix: "AlarmNames.member")
+  end
+
+  defp format_param({:dashboard_names, dashboard_names}) do
+    dashboard_names |> format(prefix: "DashboardNames.member")
+  end
+
+  defp format_param({:dimensions, dimensions}) do
+    dimensions
+    |> Enum.map(fn {key, value} -> [name: maybe_stringify(key), value: value] end)
+    |> format(prefix: "Dimensions.member")
   end
 
   defp format_param({:end_time, end_time}) do
@@ -570,7 +582,33 @@ defmodule ExAws.CloudWatch do
     |> format(prefix: "EndTime")
   end
 
+  defp format_param({:extended_statistics, extended_statistics}) do
+    extended_statistics |> format(prefix: "ExtendedStatistics.member")
+  end
+
+  defp format_param({:insufficient_data_actions, insufficient_data_actions}) do
+    insufficient_data_actions |> format(prefix: "InsufficientDataActions.member")
+  end
+
+  defp format_param({:metric_data, metric_data}) do
+    metric_data |> format(prefix: "MetricData.member")
+  end
+
+  defp format_param({:ok_actions, ok_actions}) do
+    ok_actions |> format(prefix: "OKActions.member")
+  end
+
+  defp format_param({:start_time, start_time}) do
+    start_time
+    |> DateTime.to_iso8601
+    |> format(prefix: "StartTime")
+  end
+
+  defp format_param({:statistics, statistics}) do
+    statistics |> format(prefix: "Statistics.member")
+  end
+
   defp format_param({key, parameters}) do
-    format([{key, parameters}])
+    format([ {key, parameters} ])
   end
 end
