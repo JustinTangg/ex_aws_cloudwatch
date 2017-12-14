@@ -93,6 +93,17 @@ if Code.ensure_loaded?(SweetXml) do
       {:ok, Map.put(resp, :body, parsed_body)}
     end
 
+    def parse({:error, %{body: xml} = resp}, _) do
+      parsed_body = 
+        xml
+        |> SweetXml.xpath(
+          ~x"//ErrorResponse",
+          code: ~x"./Error/Code/text()"s,
+          message: ~x"./Error/Message/text()"s,
+        )
+      {:error, Map.put(resp, :body, parsed_body)}
+    end
+
     def parse(val, _), do: val
 
     defp alarm_xml_description do

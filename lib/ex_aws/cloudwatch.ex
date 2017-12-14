@@ -543,7 +543,8 @@ defmodule ExAws.CloudWatch do
               |> Map.put("Action", action_string)
               |> Map.put("Version", @version),
       service: :monitoring,
-      action: action
+      action: action,
+      parser: &ExAws.Cloudwatch.Parsers.parse/2
     }
   end
 
