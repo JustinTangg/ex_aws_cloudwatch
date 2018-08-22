@@ -12,7 +12,6 @@ defmodule ExAws.CloudWatch.Mixfile do
     ]
   end
 
-  defp elixirc_paths(:test), do: ["lib", "test/support"]
   defp elixirc_paths(_),     do: ["lib",]
 
   # Run "mix help compile.app" to learn about applications.
